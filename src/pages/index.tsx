@@ -20,12 +20,22 @@ export default function Home() {
             src={heroImg}
             priority
           />
+        </div>
 
           <h1 className={styles.title}>
             Sistema feito para você organizar <br />
             seus estudos e tarefas
           </h1>
-        </div>
+
+          <div className={styles.infoContent}>
+            <section className={styles.box}>
+              <span>+12 posts</span>
+            </section>
+
+            <section className={styles.box}>
+              <span>+90 comments</span>
+            </section>
+          </div>
       </main>
 
     </div>
