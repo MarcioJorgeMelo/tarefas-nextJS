@@ -6,14 +6,49 @@ import { getSession } from "next-auth/react"
 import { TextArea } from '@/components/textArea';
 import { FiShare2 } from 'react-icons/fi';
 import { FaTrash } from 'react-icons/fa';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
-export default function Dashboard() {
+import { db } from '../../services/firebaseConnection';
+import { addDoc, collection } from 'firebase/firestore';
+
+interface UserProps {
+    user: {
+        email: string;
+    }
+}
+
+export default function Dashboard({ user }: UserProps) {
     const [input, setInput] = useState("");
     const [publicTask, setPublicTask] = useState(false);
 
     function handleChangePublic(event: ChangeEvent<HTMLInputElement>) {
         setPublicTask(event.target.checked);
+    }
+
+    async function handleRegisterTask(event: FormEvent) {
+        event.preventDefault();
+
+        if(input === "") {
+            return;
+        }
+
+        try {
+            
+            await addDoc(collection(db, "tasks"), {
+                tarefa: input,
+                created: new Date(),
+                user: user?.email,
+                public: publicTask
+            })
+
+            setInput("");
+            setPublicTask(false);
+
+            alert("Tarefa cadastrada com sucesso!");
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -27,7 +62,7 @@ export default function Dashboard() {
                     <div className={styles.contentForm}>
                         <h1 className={styles.title}>Qual sua tarefa?</h1>
 
-                        <form>
+                        <form onSubmit={handleRegisterTask}>
                             <TextArea
                                 placeholder='Digite sua tarefa...'
                                 value={input}
@@ -98,6 +133,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
 
     return{
-        props: {},
+        props: {
+            user: {
+                email: session?.user?.email,
+            }
+        },
     }
 }
