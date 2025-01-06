@@ -64,7 +64,6 @@ export default function Dashboard({ user }: UserProps) {
                 })
 
                 setTasks(lista);
-                console.log(lista);
             })
 
         }
