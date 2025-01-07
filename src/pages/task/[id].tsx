@@ -1,3 +1,5 @@
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import styles from './styles.module.css';
 import { TextArea } from '../../components/textArea';
@@ -10,6 +12,7 @@ import {
     query,
     where,
     getDoc,
+    addDoc,
 } from 'firebase/firestore';
 
 interface TaskProps {
@@ -23,6 +26,33 @@ interface TaskProps {
 }
 
 export default function Task({ item }: TaskProps) {
+    const { data: session } = useSession();
+    const [input, setInput] = useState("");
+
+    async function handleRegisterComment(event: FormEvent) {
+        event.preventDefault();
+
+        if(input === "") return;
+
+        if(!session?.user?.email || !session?.user?.name) return;
+
+        try {
+
+            const docRef = await addDoc(collection(db, "comments"), {
+                comment: input,
+                created: new Date,
+                user: session?.user?.email,
+                name: session?.user?.name,
+                taskId: item?.taskId,
+            })
+            
+            setInput("");
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className={styles.container}>
             <Head>
@@ -42,12 +72,18 @@ export default function Task({ item }: TaskProps) {
             <section className={styles.commentsContainer}>
                 <h2>Deixar comentários</h2>
 
-                <form>
+                <form onSubmit={handleRegisterComment}>
                     <TextArea
                         placeholder='Digite seu comentário...'
+                        value={input}
+                        onChange={ (event:ChangeEvent<HTMLTextAreaElement>) => setInput(event.target.value) }
                     />
 
-                    <button className={styles.button}>Enviar comentário</button>
+                    <button
+                        disabled={!session?.user}
+                        className={styles.button}
+                        type='submit'
+                    >Enviar comentário</button>
                 </form>
             </section>
         </div>
