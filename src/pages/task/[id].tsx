@@ -15,6 +15,7 @@ import {
     addDoc,
     getDocs,
 } from 'firebase/firestore';
+import { FaTrash } from 'react-icons/fa';
 
 interface TaskProps {
     item: {
@@ -56,7 +57,16 @@ export default function Task({ item, allComments }: TaskProps) {
                 name: session?.user?.name,
                 taskId: item?.taskId,
             })
-            
+
+            const data = {
+                id: docRef.id,
+                comment: input,
+                user: session?.user?.email,
+                name: session?.user?.name,
+                taskId: item?.taskId
+            }
+
+            setComments((oldItens) => [...oldItens, data]);
             setInput("");
 
         } catch (error) {
@@ -107,6 +117,14 @@ export default function Task({ item, allComments }: TaskProps) {
 
                 {comments.map((item) => (
                     <article key={item.id} className={styles.comment}>
+                        <div className={styles.headComment}>
+                            <label className={styles.commentsLabel}>{item.name}</label>
+                            {item.user === session?.user?.email && (
+                                <button className={styles.buttonTrash}>
+                                    <FaTrash size={18} color='#EA3140'/>
+                                </button>
+                            )}
+                        </div>
                         <p>{item.comment}</p>
                     </article>
                 ))}
