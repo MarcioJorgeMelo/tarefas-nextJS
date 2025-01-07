@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import styles from './styles.module.css';
@@ -14,8 +14,10 @@ import {
     getDoc,
     addDoc,
     getDocs,
+    deleteDoc,
 } from 'firebase/firestore';
 import { FaTrash } from 'react-icons/fa';
+import { log } from 'console';
 
 interface TaskProps {
     item: {
@@ -74,6 +76,20 @@ export default function Task({ item, allComments }: TaskProps) {
         }
     }
 
+    async function handleDeleteComment(id: string) {
+        try {
+            
+            const docRef = doc(db, "comments", id);
+            await deleteDoc(docRef);
+
+            const deleteComment = comments.filter((item) => item.id !== id);
+            setComments(deleteComment);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className={styles.container}>
             <Head>
@@ -121,7 +137,7 @@ export default function Task({ item, allComments }: TaskProps) {
                             <label className={styles.commentsLabel}>{item.name}</label>
                             {item.user === session?.user?.email && (
                                 <button className={styles.buttonTrash}>
-                                    <FaTrash size={18} color='#EA3140'/>
+                                    <FaTrash onClick={() => handleDeleteComment(item.id)} size={18} color='#EA3140'/>
                                 </button>
                             )}
                         </div>
