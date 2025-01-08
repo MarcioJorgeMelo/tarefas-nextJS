@@ -103,7 +103,7 @@ export default function Dashboard({ user }: UserProps) {
 
     async function handleShare(id: string) {
         await navigator.clipboard.writeText(
-            `${process.env.NEXT_PUBLIC_URL}/task/${id}`
+            `${process.env.NEXT_PUBLIC_URL}task/${id}`
         )
 
         alert("URL copiada com sucesso!");
