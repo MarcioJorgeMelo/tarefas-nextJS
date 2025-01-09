@@ -161,6 +161,12 @@ O projeto é organizado em vários arquivos para melhor organização do código
   git clone https://github.com/MarcioJorgeMelo/tarefas-nextJS.git
 ```
 
+**Vá para a pasta do projeto**
+
+```bash
+  cd tarefas-next
+```
+
 **Abra o projeto no VSCode**
 
 ```bash
