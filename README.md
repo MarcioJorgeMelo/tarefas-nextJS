@@ -43,7 +43,7 @@ O **Tarefas +** é uma plataforma de rede social para cadastrar e mostrar suas t
           <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original-wordmark.svg" width="40px" alt="React logo" />
           <br />
           <sub>
-            <b>React</b>
+            <b>Next.JS</b>
           </sub>
         </a>
       </td>
